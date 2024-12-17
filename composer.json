@@ -1,5 +1,5 @@
 {
-    "name": "nightmare/zen-payment-sdk",
+    "name": "nightmareblackengel/zen-payment-sdk",
     "description": "Zen payment SDK",
     "type": "library",
     "require": {
