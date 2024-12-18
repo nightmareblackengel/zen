@@ -84,9 +84,29 @@ class ZenPayment
         return new TransactionResponse($body['id'], $body['redirectUrl'], $body['status']);
     }
 
-    public function getPaymentStatus()
+    public function getPaymentStatus(string $serviceTransactionId): ?TransactionStatus
     {
+        $client = new Client();
+        $headers = [
+            'request-id' => $this->getUid(),
+        ];
+        $request = new Request('GET', $this->configurator->apiUri . 'transactions/' . $serviceTransactionId, $headers);
+        $res = $client->send($request);
 
+        if ($res->getStatusCode() !== ResponseCodes::Created->value) {
+            $this->addError($res->getReasonPhrase());
+            return null;
+        }
+
+        $answer = $res->getBody();
+        $body = json_decode($answer->getContents());
+
+        if (empty($body['status'])) {
+            $this->addError('Error. Incorrect params.');
+            return null;
+        }
+
+        return TransactionStatus::getTransactionBy($body['status']);
     }
 
     public function parseNotification()
@@ -148,6 +168,11 @@ class ZenPayment
     protected function addError(string $error): void
     {
         $this->errors[] = $error;
+    }
+
+    public function getErrors(): string
+    {
+        return implode('; ', $this->errors);
     }
 
     protected function getUid(): string
