@@ -3,6 +3,7 @@
     "description": "Zen payment SDK",
     "type": "library",
     "require": {
+        "php": "^8.0",
         "guzzlehttp/guzzle": "8.0.x-dev"
     },
     "license": "proprietary",
@@ -13,7 +14,8 @@
     },
     "authors": [
         {
-            "name": "Nightmare"
+            "name": "Black Engel",
+            "homepage": "https://github.com/nightmareblackengel/"
         }
     ],
     "minimum-stability": "dev"
