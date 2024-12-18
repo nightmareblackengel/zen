@@ -14,15 +14,12 @@ namespace ZenPaymentSdk;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
-use ZenPaymentSdk\config\AbstractConfiguration;
-use ZenPaymentSdk\config\ProductionConfig;
-use ZenPaymentSdk\config\TestConfig;
+use ZenPaymentSdk\Config\AbstractConfiguration;
+use ZenPaymentSdk\Config\ProductionConfig;
+use ZenPaymentSdk\Config\TestConfig;
 
 class ZenPayment
 {
-    public const SUCCESS_RESPONSE_CODE = 201;
-    public const ERROR_RESPONSE_CODE = 404;
-
     /** @var AbstractConfiguration|ProductionConfig|TestConfig  */
     protected AbstractConfiguration $configurator;
 
@@ -63,7 +60,7 @@ class ZenPayment
         $request = new Request('POST', $this->configurator->apiUri . 'payouts', $headers, $body);
         $res = $client->send($request);
 
-        if ($res->getStatusCode() !== self::SUCCESS_RESPONSE_CODE) {
+        if ($res->getStatusCode() !== ResponseCodes::Created->value) {
             $this->addError($res->getReasonPhrase());
             return null;
         }

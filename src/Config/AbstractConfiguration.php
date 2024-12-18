@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZenPaymentSdk\config;
+namespace ZenPaymentSdk\Config;
 
 abstract class AbstractConfiguration
 {
