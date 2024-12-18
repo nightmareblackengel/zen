@@ -9,5 +9,7 @@ namespace ZenPaymentSdk\config;
  */
 class TestConfig extends AbstractConfiguration
 {
-    protected string $apiUri = 'https://api.zen-test.com/v1/transactions';
+    public string $apiUri = 'https://api.zen-test.com/v1/';
+
+    public string $websiteIpnParser = 'https://mystore.com/ipn-accept-transactions?is_test=1';
 }

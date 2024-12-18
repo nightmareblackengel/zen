@@ -6,5 +6,9 @@ namespace ZenPaymentSdk\config;
 
 abstract class AbstractConfiguration
 {
-    protected string $apiUri;
+    public string $apiUri;
+
+    public string $websiteIpnParser;
+
+    public string $ipnServer = 'https://ipn-pay.g2a.com/ipn';
 }
