@@ -11,5 +11,5 @@ class TestConfig extends AbstractConfiguration
 {
     public string $apiUri = 'https://api.zen-test.com/v1/';
 
-    public string $websiteIpnParser = 'https://mystore.com/ipn-accept-transactions?is_test=1';
+    public string $ipnApiSecret = '73a6de1f9d36bacd59ab131a3770c419d0693721';
 }

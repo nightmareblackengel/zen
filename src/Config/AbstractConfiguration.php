@@ -8,7 +8,9 @@ abstract class AbstractConfiguration
 {
     public string $apiUri;
 
-    public string $websiteIpnParser;
+    public string $ipnApiSecret;
 
     public string $ipnServer = 'https://ipn-pay.g2a.com/ipn';
+
+    public string $ipnServerIp = '104.22.63.240';
 }

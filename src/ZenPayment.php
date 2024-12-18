@@ -4,14 +4,14 @@ namespace ZenPaymentSdk;
 
 
 /*
- *
-Создание платежа;
-Получение статуса платежа;
+ * TODO:
+
 Обработка нотификаций;
 Создание выплат;
 Возврат средств;
  */
 
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use ZenPaymentSdk\Payout\PayoutRequest;
@@ -34,6 +34,8 @@ class ZenPayment
 
     protected array $errors = [];
 
+    protected array $allowedIpnIps = ['127.0.0.1', '::1', '172.18.0.1'];
+
     public function __construct(bool $isTest = false)
     {
         if ($isTest) {
@@ -41,6 +43,8 @@ class ZenPayment
         } else {
             $this->configurator = new TestConfig();
         }
+
+        $this->allowedIpnIps = array_merge($this->allowedIpnIps, [$this->configurator->ipnServerIp]);
     }
 
     public function createPayment(TransactionRequest $transaction): ?TransactionResponse
@@ -111,7 +115,17 @@ class ZenPayment
 
     public function parseNotification()
     {
+        $request = array_merge($_GET, $_POST);
 
+        if (!$this->isValidIpnRequest()) {
+            throw new Exception('Invalid request', 401);
+        }
+
+        if (empty($_SERVER['ZEN_API_SECRET']) || $_SERVER['ZEN_API_SECRET'] !== $this->configurator->ipnApiSecret) {
+            throw new Exception('Invalid request', 401);
+        }
+
+        // some logic for parsing data...
     }
 
     public function createPayout(PayoutRequest $payout): ?PayoutResponse
@@ -177,6 +191,26 @@ class ZenPayment
 
     protected function getUid(): string
     {
+        //TODO:
+        var_dump($_ENV['ZEN_API_UID'] ?? '');
         return $_ENV['ZEN_API_UID'] ?? '';
+    }
+
+    protected function isValidIpnRequest(): bool
+    {
+        $remoteIp = null;
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $remoteIp = $_SERVER['HTTP_CLIENT_IP'];
+        } else if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $remoteIp = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $remoteIp = $_SERVER['REMOTE_ADDR'];
+        }
+
+        if (empty($remoteIp)) {
+            return false;
+        }
+
+        return in_array($remoteIp, $this->allowedIpnIps);
     }
 }
