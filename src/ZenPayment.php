@@ -213,9 +213,6 @@ class ZenPayment
 
     protected function getUid(): string
     {
-        //TODO:
-        var_dump($_ENV['ZEN_API_UID'] ?? '');
-        exit();
         return $_ENV['ZEN_API_UID'] ?? '';
     }
 
