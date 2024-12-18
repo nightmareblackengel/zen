@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZenPaymentSdk;
+namespace ZenPaymentSdk\Payout;
 
 class PayoutRequest
 {
