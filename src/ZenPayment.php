@@ -38,6 +38,21 @@ class ZenPayment
         array $params
     ): ?array
     {
+
+    }
+
+    public function getPaymentStatus()
+    {
+
+    }
+
+    public function parseNotification()
+    {
+
+    }
+
+    public function createPayout(PayoutRequest $payout): ?PayoutResponse
+    {
         $client = new Client();
         $headers = [
             'request-id' => '',
@@ -45,11 +60,11 @@ class ZenPayment
         ];
         $body = '{
            "comment": "Payment number #xxxxx",
-           "merchantTransactionId": "' . $params['transactionId'] . '"
-           "originMerchantTransactionId": "' . $params['transactionId'] . '",
+           "merchantTransactionId": "' . $payout->transactionId . '"
+           "originMerchantTransactionId": "' . $payout->transactionId . '",
            "paymentChannel": "PCL_CARD",
-           "amount": "' . $params['amount'] . '",
-           "currency": "' . $params['currency'] . '",
+           "amount": "' . $payout->amount . '",
+           "currency": "' . $payout->currency . '",
            "customIpnUrl": "' . $this->configurator->ipnServer . '",
            "paymentSpecificData": {
               "payoutBtcAddress": "1HB5XDDddDDdDDDj6mfBsbifRoD4miY36v",
@@ -68,25 +83,7 @@ class ZenPayment
         $answer = $res->getBody();
         $body = json_decode($answer->getContents());
 
-        return [
-            'servicePaymentId' => $body['id'],
-            'redirectUrl' => $body['redirectUrl'],
-        ];
-    }
-
-    public function getPaymentStatus()
-    {
-
-    }
-
-    public function parseNotification()
-    {
-
-    }
-
-    public function createPayout()
-    {
-
+        return new PayoutResponse($body['id'], $body['redirectUrl']);
     }
 
     public function refund()
