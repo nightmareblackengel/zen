@@ -20,8 +20,9 @@ abstract class AbstractConfiguration
     {
         define("ZEN_ROOT_PATH", dirname(__DIR__));
 
-        var_dump(ZEN_ROOT_PATH);
         $dotEnv = new DotEnv();
         $dotEnv->load(ZEN_ROOT_PATH . '/.env');
+
+        $this->ipnApiSecret = $_ENV['ZEN_API_SECRET'] ?? '';
     }
 }
