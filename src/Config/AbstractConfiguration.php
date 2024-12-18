@@ -18,10 +18,10 @@ abstract class AbstractConfiguration
 
     public function __construct()
     {
-        define("ROOT_PATH", dirname(dirname(__DIR__)));
+        define("ZEN_ROOT_PATH", dirname(__DIR__));
 
-        var_dump(ROOT_PATH);
+        var_dump(ZEN_ROOT_PATH);
         $dotEnv = new DotEnv();
-        $dotEnv->load(ROOT_PATH . '/.env');
+        $dotEnv->load(ZEN_ROOT_PATH . '/.env');
     }
 }
