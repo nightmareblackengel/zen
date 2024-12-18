@@ -7,6 +7,7 @@ namespace ZenPaymentSdk\Transaction;
 class TransactionRequest
 {
     public string $id;
+    public string $serviceId;
     public $amount;
     public string $currency;
 }

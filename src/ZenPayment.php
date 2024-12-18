@@ -2,15 +2,6 @@
 
 namespace ZenPaymentSdk;
 
-
-/*
- * TODO:
-
-Обработка нотификаций;
-Создание выплат;
-Возврат средств;
- */
-
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
@@ -23,9 +14,6 @@ use ZenPaymentSdk\Transaction\TransactionRequest;
 use ZenPaymentSdk\Transaction\TransactionResponse;
 
 // TODO: remove
-// required field
-// getUid
-// return status code
 
 class ZenPayment
 {
@@ -174,9 +162,43 @@ class ZenPayment
         return new PayoutResponse($body['id'], $body['redirectUrl'], $body['status']);
     }
 
-    public function refund()
+    /**
+     * Send Refund request
+     *
+     * Allows to process transaction refund when the parent transaction has “accepted” status
+     * Please note: not all payment channel supports partial refunds
+     *
+     * @param TransactionRequest $transaction
+     * @return TransactionResponse|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function refund(TransactionRequest $transaction): ?TransactionResponse
     {
+        $client = new Client();
+        $headers = [
+            'request-id' => $this->getUid(),
+            'Content-Type' => 'application/json'
+        ];
+        $body = '{
+           "comment": "Refund for ######",
+           "amount": "' . $transaction->amount . '",
+           "transactionId": "' . $transaction->serviceId . '",
+           "currency": "' . $transaction->currency . '",
+           "merchantTransactionId": "' . $transaction->id . '",
 
+        }';
+        $request = new Request('POST', $this->configurator->apiUri . 'transactions/refund', $headers, $body);
+        $res = $client->send($request);
+
+        if ($res->getStatusCode() !== ResponseCodes::Created->value) {
+            $this->addError($res->getReasonPhrase());
+            return null;
+        }
+
+        $answer = $res->getBody();
+        $body = json_decode($answer->getContents());
+
+        return new TransactionResponse($body['id'], $body['redirectUrl'], $body['status']);
     }
 
     protected function addError(string $error): void
