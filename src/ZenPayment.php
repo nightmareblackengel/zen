@@ -26,7 +26,7 @@ class ZenPayment
 
     public function __construct(bool $isTest = false)
     {
-        if ($isTest) {
+        if (!$isTest) {
             $this->configurator = new ProductionConfig();
         } else {
             $this->configurator = new TestConfig();
@@ -215,6 +215,7 @@ class ZenPayment
     {
         //TODO:
         var_dump($_ENV['ZEN_API_UID'] ?? '');
+        exit();
         return $_ENV['ZEN_API_UID'] ?? '';
     }
 
