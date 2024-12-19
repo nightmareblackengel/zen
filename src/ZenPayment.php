@@ -37,6 +37,8 @@ class ZenPayment
 
     public function createPayment(TransactionRequest $transaction): ?TransactionResponse
     {
+        $this->clearErrors();
+
         $client = new Client();
         $headers = [
             'request-id' => $this->getUid(),
@@ -63,7 +65,13 @@ class ZenPayment
            }
         }';
         $request = new Request('POST', $this->configurator->api_uri . 'transactions', $headers, $body);
-        $res = $client->send($request);
+
+        try {
+            $res = $client->send($request);
+        } catch (Exception $ex) {
+            $this->addError($ex->getMessage());
+            return null;
+        }
 
         if ($res->getStatusCode() !== ResponseCodes::Created->value) {
             $this->addError($res->getReasonPhrase());
@@ -72,18 +80,29 @@ class ZenPayment
 
         $answer = $res->getBody();
         $body = json_decode($answer->getContents());
+        if (empty($body['id']) || empty($body['redirectUrl']) || empty($body['status'])) {
+            $this->addError('Error! Incorrect answer parameters');
+            return null;
+        }
 
         return new TransactionResponse($body['id'], $body['redirectUrl'], $body['status']);
     }
 
     public function getPaymentStatus(string $serviceTransactionId): ?TransactionStatus
     {
+        $this->clearErrors();
+
         $client = new Client();
         $headers = [
             'request-id' => $this->getUid(),
         ];
         $request = new Request('GET', $this->configurator->api_uri . 'transactions/' . $serviceTransactionId, $headers);
-        $res = $client->send($request);
+        try {
+            $res = $client->send($request);
+        } catch (Exception $ex) {
+            $this->addError($ex->getMessage());
+            return null;
+        }
 
         if ($res->getStatusCode() !== ResponseCodes::Created->value) {
             $this->addError($res->getReasonPhrase());
@@ -118,6 +137,8 @@ class ZenPayment
 
     public function createPayout(PayoutRequest $payout): ?PayoutResponse
     {
+        $this->clearErrors();
+
         $client = new Client();
         $headers = [
             'request-id' => $this->getUid(),
@@ -149,7 +170,13 @@ class ZenPayment
           },
         }';
         $request = new Request('POST', $this->configurator->api_uri . 'payouts', $headers, $body);
-        $res = $client->send($request);
+
+        try {
+            $res = $client->send($request);
+        } catch (Exception $ex) {
+            $this->addError($ex->getMessage());
+            return null;
+        }
 
         if ($res->getStatusCode() !== ResponseCodes::Created->value) {
             $this->addError($res->getReasonPhrase());
@@ -158,6 +185,10 @@ class ZenPayment
 
         $answer = $res->getBody();
         $body = json_decode($answer->getContents());
+        if (empty($body['id']) || empty($body['redirectUrl']) || empty($body['status'])) {
+            $this->addError('Error! Incorrect answer parameters');
+            return null;
+        }
 
         return new PayoutResponse($body['id'], $body['redirectUrl'], $body['status']);
     }
@@ -174,6 +205,8 @@ class ZenPayment
      */
     public function refund(TransactionRequest $transaction): ?TransactionResponse
     {
+        $this->clearErrors();
+
         $client = new Client();
         $headers = [
             'request-id' => $this->getUid(),
@@ -188,7 +221,13 @@ class ZenPayment
 
         }';
         $request = new Request('POST', $this->configurator->api_uri . 'transactions/refund', $headers, $body);
-        $res = $client->send($request);
+
+        try {
+            $res = $client->send($request);
+        } catch (Exception $ex) {
+            $this->addError($ex->getMessage());
+            return null;
+        }
 
         if ($res->getStatusCode() !== ResponseCodes::Created->value) {
             $this->addError($res->getReasonPhrase());
@@ -197,6 +236,10 @@ class ZenPayment
 
         $answer = $res->getBody();
         $body = json_decode($answer->getContents());
+        if (empty($body['id']) || empty($body['redirectUrl']) || empty($body['status'])) {
+            $this->addError('Error! Incorrect answer parameters');
+            return null;
+        }
 
         return new TransactionResponse($body['id'], $body['redirectUrl'], $body['status']);
     }

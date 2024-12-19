@@ -42,4 +42,14 @@ trait ErrorsBehaviorTrait
     {
         return count($this->errors) > 0;
     }
+
+    /**
+     * Clear error list
+     *
+     * @return void
+     */
+    public function clearErrors(): void
+    {
+        $this->errors = [];
+    }
 }
