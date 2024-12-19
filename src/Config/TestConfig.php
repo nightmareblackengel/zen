@@ -9,5 +9,5 @@ namespace ZenPaymentSdk\Config;
  */
 class TestConfig extends AbstractConfiguration
 {
-    public string $apiUri = 'https://api.zen-test.com/v1/';
+    public string $api_uri = 'https://api.zen-test.com/v1/';
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ZenPaymentSdk;
 
 use Exception;
@@ -13,8 +15,6 @@ use ZenPaymentSdk\Config\TestConfig;
 use ZenPaymentSdk\Transaction\TransactionRequest;
 use ZenPaymentSdk\Transaction\TransactionResponse;
 
-// TODO: remove
-
 class ZenPayment
 {
     /** @var AbstractConfiguration|ProductionConfig|TestConfig  */
@@ -22,7 +22,7 @@ class ZenPayment
 
     protected array $errors = [];
 
-    protected array $allowedIpnIps = ['127.0.0.1', '::1', '172.18.0.1'];
+    protected array $allowed_ipn_ips = ['127.0.0.1', '::1', '172.18.0.1'];
 
     public function __construct(bool $isTest = false)
     {
@@ -32,7 +32,7 @@ class ZenPayment
             $this->configurator = new TestConfig();
         }
 
-        $this->allowedIpnIps = array_merge($this->allowedIpnIps, [$this->configurator->ipnServerIp]);
+        $this->allowed_ipn_ips = array_merge($this->allowed_ipn_ips, [$this->configurator->ipn_server_ip]);
     }
 
     public function createPayment(TransactionRequest $transaction): ?TransactionResponse
@@ -47,7 +47,7 @@ class ZenPayment
            "paymentChannel": "PCL_CARD",
            "amount": "' . $transaction->amount . '",
            "currency": "' . $transaction->currency . '",
-           "customIpnUrl": "' . $this->configurator->ipnServer . '",
+           "customIpnUrl": "' . $this->configurator->ipn_server . '",
            "comment": "Transaction number #xxxxxx",
            "customer": {
               "id": "23beb187-f8a3-44b8-9ef8-b31180358dd3",
@@ -62,7 +62,7 @@ class ZenPayment
               "ip": "127.0.0.1"
            }
         }';
-        $request = new Request('POST', $this->configurator->apiUri . 'transactions', $headers, $body);
+        $request = new Request('POST', $this->configurator->api_uri . 'transactions', $headers, $body);
         $res = $client->send($request);
 
         if ($res->getStatusCode() !== ResponseCodes::Created->value) {
@@ -82,7 +82,7 @@ class ZenPayment
         $headers = [
             'request-id' => $this->getUid(),
         ];
-        $request = new Request('GET', $this->configurator->apiUri . 'transactions/' . $serviceTransactionId, $headers);
+        $request = new Request('GET', $this->configurator->api_uri . 'transactions/' . $serviceTransactionId, $headers);
         $res = $client->send($request);
 
         if ($res->getStatusCode() !== ResponseCodes::Created->value) {
@@ -109,7 +109,7 @@ class ZenPayment
             throw new Exception('Invalid request', 401);
         }
 
-        if (empty($_SERVER['ZEN_API_SECRET']) || $_SERVER['ZEN_API_SECRET'] !== $this->configurator->ipnApiSecret) {
+        if (empty($_SERVER['ZEN_API_SECRET']) || $_SERVER['ZEN_API_SECRET'] !== $this->configurator->ipn_api_secret) {
             throw new Exception('Invalid request', 401);
         }
 
@@ -129,7 +129,7 @@ class ZenPayment
            "paymentChannel": "PCL_CARD",
            "amount": "' . $payout->amount . '",
            "currency": "' . $payout->currency . '",
-           "customIpnUrl": "' . $this->configurator->ipnServer . '",
+           "customIpnUrl": "' . $this->configurator->ipn_server . '",
            "paymentSpecificData": {
               "payoutBtcAddress": "1HB5XDDddDDdDDDj6mfBsbifRoD4miY36v",
               "feeOwner": "partner",
@@ -148,7 +148,7 @@ class ZenPayment
             "ip": "127.0.0.1"
           },
         }';
-        $request = new Request('POST', $this->configurator->apiUri . 'payouts', $headers, $body);
+        $request = new Request('POST', $this->configurator->api_uri . 'payouts', $headers, $body);
         $res = $client->send($request);
 
         if ($res->getStatusCode() !== ResponseCodes::Created->value) {
@@ -187,7 +187,7 @@ class ZenPayment
            "merchantTransactionId": "' . $transaction->id . '",
 
         }';
-        $request = new Request('POST', $this->configurator->apiUri . 'transactions/refund', $headers, $body);
+        $request = new Request('POST', $this->configurator->api_uri . 'transactions/refund', $headers, $body);
         $res = $client->send($request);
 
         if ($res->getStatusCode() !== ResponseCodes::Created->value) {
@@ -231,6 +231,6 @@ class ZenPayment
             return false;
         }
 
-        return in_array($remoteIp, $this->allowedIpnIps);
+        return in_array($remoteIp, $this->allowed_ipn_ips);
     }
 }
