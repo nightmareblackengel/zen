@@ -6,17 +6,17 @@ namespace ZenPaymentSdk;
 
 enum TransactionStatus: string
 {
-    /** new, unprocessed transaction */
+    /** @var string - new, unprocessed transaction */
     case New = 'NEW';
-    /** awaiting status */
+    /** @var string - awaiting status */
     case Pending = 'PENDING';
-    /** transaction authorized */
+    /** @var string - transaction authorized */
     case Authorized = 'AUTHORIZED';
-    /** transaction accepted */
+    /** @var string - transaction accepted */
     case Accepted = 'ACCEPTED';
-    /** transaction rejected */
+    /** @var string - transaction rejected */
     case Rejected = 'REJECTED';
-    /** transaction canceled */
+    /** @var string - transaction canceled */
     case Canceled = 'CANCELED';
 
     public static function getTransactionBy(string $status): ?TransactionStatus

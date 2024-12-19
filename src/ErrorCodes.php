@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace ZenPaymentSdk;
 
+/**
+ * Enumerate contains all Zen API Error with it codes (include double records)))
+ */
 enum ErrorCodes: string
 {
     // 	Creating new transaction in payment service provider failed.

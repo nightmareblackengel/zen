@@ -4,8 +4,16 @@ declare(strict_types=1);
 
 namespace ZenPaymentSdk;
 
+/**
+ * Class load String from file and save it to $_ENV
+ */
 class DotEnv
 {
+    /**
+     * Load file entry, then parse it into variables, then save its into $_ENV
+     *
+     * @var string $path - full file path
+     */
     public function load(string $path): void
     {
         if (!file_exists($path)) {
