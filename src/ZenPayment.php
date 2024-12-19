@@ -106,7 +106,13 @@ class ZenPayment
             return null;
         }
 
-        return TransactionStatus::getTransactionBy($body['status']);
+        $transaction = TransactionStatus::getTransactionBy($body['status']);
+        if (empty($transaction)) {
+            $this->addError('Error! Incorrect transaction status.');
+            return null;
+        }
+
+        return $transaction;
     }
 
     public function parseNotification()
