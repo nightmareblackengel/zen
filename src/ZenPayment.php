@@ -17,10 +17,10 @@ use ZenPaymentSdk\Transaction\TransactionResponse;
 
 class ZenPayment
 {
+    use ErrorsBehaviorTrait;
+
     /** @var AbstractConfiguration|ProductionConfig|TestConfig  */
     protected AbstractConfiguration $configurator;
-
-    protected array $errors = [];
 
     protected array $allowed_ipn_ips = ['127.0.0.1', '::1', '172.18.0.1'];
 
@@ -199,16 +199,6 @@ class ZenPayment
         $body = json_decode($answer->getContents());
 
         return new TransactionResponse($body['id'], $body['redirectUrl'], $body['status']);
-    }
-
-    protected function addError(string $error): void
-    {
-        $this->errors[] = $error;
-    }
-
-    public function getErrors(): string
-    {
-        return implode('; ', $this->errors);
     }
 
     protected function getUid(): string
