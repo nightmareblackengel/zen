@@ -125,7 +125,7 @@ class ZenPayment
         ];
         $body = '{
            "comment": "Payment number #xxxxx",
-           "merchantTransactionId": "' . $payout->transactionId . '"
+           "merchantTransactionId": "' . $payout->transaction_id . '"
            "paymentChannel": "PCL_CARD",
            "amount": "' . $payout->amount . '",
            "currency": "' . $payout->currency . '",
@@ -182,7 +182,7 @@ class ZenPayment
         $body = '{
            "comment": "Refund for ######",
            "amount": "' . $transaction->amount . '",
-           "transactionId": "' . $transaction->serviceId . '",
+           "transactionId": "' . $transaction->service_id . '",
            "currency": "' . $transaction->currency . '",
            "merchantTransactionId": "' . $transaction->id . '",
 

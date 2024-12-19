@@ -6,7 +6,7 @@ namespace ZenPaymentSdk\Payout;
 
 class PayoutRequest
 {
-    public string $transactionId;
+    public string $transaction_id;
     public $amount;
     public $currency;
 }
